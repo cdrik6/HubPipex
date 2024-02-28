@@ -1,4 +1,0 @@
-total 24
--rwxr-xr-x 1 caguillo 2023_paris 16568 Feb 28 00:07 a.out
--rw-r--r-- 1 caguillo 2023_paris  2067 Feb 27 23:56 dup2.c
--rw-r--r-- 1 caguillo 2023_paris     0 Feb 28 00:07 dup2.txt
