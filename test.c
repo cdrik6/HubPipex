@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 22:57:35 by caguillo          #+#    #+#             */
-/*   Updated: 2024/02/29 00:39:40 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/02/29 20:04:45 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 void	dup2_test(void);
@@ -23,6 +24,9 @@ void	execve_test(void);
 void	fork_test(void);
 int		ft_strlen(char *str);
 void	pipe_test(void);
+void	unlink_test(void);
+void	fork_unlink_test(void);
+void	wait_test(void);
 
 int	main(void)
 {
@@ -31,7 +35,10 @@ int	main(void)
 	// fork_test();
 	// dup2_test();
 	// printf("toto");
-	pipe_test();
+	// pipe_test();
+	// unlink_test();
+	// fork_unlink_test();
+	wait_test();
 	return (0);
 }
 
@@ -120,13 +127,16 @@ void	pipe_test(void)
 {
 	int		fd[2];
 	pid_t	pid;
-	char	buffer[13];
+	char	buffer[14];
+	int		i;
 
 	if (pipe(fd) == -1)
 	{
 		perror("pipe");
 		exit(EXIT_FAILURE);
 	}
+	printf("f0 %d\n", fd[0]);
+	printf("f1 %d\n", fd[1]);
 	pid = fork();
 	if (pid == -1)
 	{
@@ -136,16 +146,22 @@ void	pipe_test(void)
 	printf("ici %d\n", pid);
 	if (pid == 0)
 	{
-		close(fd[0]); // close the read end of the pipe
 		write(fd[1], "Hello parent!", 13);
 		close(fd[1]); // close the write end of the pipe
+		close(fd[0]); // close the read end of the pipe
 		exit(EXIT_SUCCESS);
 	}
 	else
 	{
-		close(fd[1]); // close the write end of the pipe
-		read(fd[0], buffer, 13);
+		i = 0;
+		while (i < 13)
+		{
+			read(fd[0], &buffer[i], 1);
+			i++;
+		}
+		buffer[13] = 0;
 		close(fd[0]); // close the read end of the pipe
+		close(fd[1]); // close the write end of the pipe
 		printf("Message from child: '%s'\n", buffer);
 		exit(EXIT_SUCCESS);
 	}
@@ -153,10 +169,74 @@ void	pipe_test(void)
 
 int	ft_strlen(char *str)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (str[i])
 		i++;
 	return (i);
+}
+
+void	unlink_test(void)
+{
+	if (unlink("test copy.txt") == 0)
+		printf("File successfully deleted");
+	else
+		printf("Error deleting file");
+}
+
+void	fork_unlink_test(void)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+	// printf("ici %d\n", pid);
+	if (pid == 0)
+	{
+		printf("This is the child process. (pid: %d)\n", getpid());
+		if (unlink("test copy.txt") == 0)
+			printf("child - File successfully deleted\n");
+		else
+			printf("child - Error deleting file\n");
+		// printf("%d\n", pid);
+	}
+	else
+	{
+		printf("This is the parent process. (pid: %d)\n", getpid());
+		if (unlink("test copy.txt") == 0)
+			printf("parent - File successfully deleted\n");
+		else
+			printf("parent - Error deleting file\n");
+		// printf("%d\n", pid);
+	}
+}
+
+void	wait_test(void)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		exit(EXIT_FAILURE);
+	}
+	else if (pid == 0)
+	{
+		printf("I am the child process.\n");
+		sleep(2);
+		// exit(EXIT_SUCCESS);
+	}
+	else
+	{
+		printf("I am the parent process.\n");
+		wait(NULL);
+		printf("Child process terminated after a 2s delay.\n");
+	}
+	// return (EXIT_SUCCESS);
 }
