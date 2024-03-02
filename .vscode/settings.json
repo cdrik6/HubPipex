@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "fcntl.h": "c",
+        "stdlib.h": "c",
+        "wait.h": "c",
+        "stdio.h": "c"
+    }
+}
