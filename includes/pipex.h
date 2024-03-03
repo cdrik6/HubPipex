@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/03 02:36:46 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/03 21:56:27 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ typedef struct s_pipex
 {
 	int		fd1;
 	int		fd2;
+	int		fd[2];
 	char	**paths;
-	char	**cmd1;
-	char	**cmd2;
-
+	char	**cmd;
+	char	*path_cmd;
 }			t_pipex;
 
 // main.c
@@ -49,6 +49,7 @@ void		open_files(char *file1, char *file2, t_pipex *pipex);
 void		get_paths(char **envp, t_pipex *pipex);
 void		slash_paths(t_pipex *pipex);
 void		get_cmds(char **argv, t_pipex *pipex);
+void		close_exit(t_pipex pipex);
 
 // libft.c
 void		ft_putstr_fd(int fd, char *str);
