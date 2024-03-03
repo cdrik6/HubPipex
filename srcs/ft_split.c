@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/11 23:27:44 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/02 21:29:29 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/03 01:21:23 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ char	**ft_split(char const *s, char c)
 	if (!split)
 		return (NULL);
 	split = fill_split(split, s, c);
+	if (!split)
+		return (NULL);
 	split[n] = NULL;
 	return (split);
 }

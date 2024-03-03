@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/02 22:46:06 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/03 02:34:33 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,20 +19,8 @@ void	ft_putstr_fd(int fd, char *str)
 	write(fd, str, ft_strlen(str));
 }
 
-int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (0);
-	while (str[i])
-		i++;
-	return (i);
-}
-
 // check if s2 is in s1 from start
-int	check_instr(const char *s1, const char *s2)
+int	check_instr(char *s1, char *s2)
 {
 	int	i;
 	int	n;
@@ -53,29 +41,47 @@ int	check_instr(const char *s1, const char *s2)
 	return (0);
 }
 
-char	*ft_substr(char *s, size_t start, size_t len)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	char	*sub;
 	size_t	i;
-	size_t	size;
+	size_t	len1;
+	size_t	len2;
+	char	*join;
 
-	if (!s)
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	join = malloc(sizeof(char) * (len1 + len2 + 1));
+	if (!join)
 		return (NULL);
-	if (start >= ft_strlen(s))
-		size = 0;
-	else if (start + len > ft_strlen(s))
-		size = ft_strlen(s) - start;
-	else
-		size = len;
-	i = start;
-	sub = malloc(sizeof(char) * (size + 1));
-	if (!sub)
-		return (NULL);
-	while (i < size + start)
+	i = 0;
+	while (i < len1)
 	{
-		sub[i - start] = s[i];
+		join[i] = s1[i];
 		i++;
 	}
-	sub[i - start] = '\0';
-	return (sub);
+	while (i < len1 + len2)
+	{
+		join[i] = s2[i - len1];
+		i++;
+	}
+	join[i] = '\0';
+	return (join);
+}
+
+char	*ft_strdup(char *s)
+{
+	char	*str;
+	size_t	i;
+
+	i = 0;
+	str = malloc(sizeof(char) * (ft_strlen(s) + 1));
+	if (!str)
+		return (NULL);
+	while (s[i])
+	{
+		str[i] = s[i];
+		i++;
+	}
+	str[i] = '\0';
+	return (str);
 }
