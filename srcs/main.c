@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/03 22:42:18 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/04 23:56:39 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,32 +15,19 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipex	pipex;
-	pid_t	pid;
-	int		k;
 
 	pipex = (t_pipex){0};
 	if (argc != 5)
 		return (ft_putstr_fd(2, ERR_ARG), 1);
 	open_files(argv[1], argv[argc - 1], &pipex);
-	if (pipe(pipex.fd) == -1)
-	{
-		perror("pipe");
-		close_exit(pipex);
-	}
-	get_paths(envp, &pipex);
-	k = 0;
-	while (k < 2)
-	{
-		pid = fork();
-		if (pid == -1)
-		{
-			perror("fork");
-			free_paths(pipex.paths);
-			close_exit(pipex);
-		}
-		if (pid == 0)
-			child(pipex, argv, envp, k);
-	}
+	if (dup2(pipex.fd1, STDIN) == -1)
+		return (perror("dup2 infile"), 1);
+	if (dup2(pipex.fd2, STDOUT) == -1)
+		return (perror("dup2 outfile"), 1);
+	fork_child(pipex, argv, envp, 1);
+	exec_cmd(pipex, argv, envp, 2);
+	close_pipe(pipex);
+	// get_paths(envp, &pipex);
 }
 
 void	open_files(char *file1, char *file2, t_pipex *pipex)
@@ -48,52 +35,79 @@ void	open_files(char *file1, char *file2, t_pipex *pipex)
 	(*pipex).fd1 = open(file1, O_RDONLY);
 	if ((*pipex).fd1 < 0)
 	{
-		perror("open file1");
+		perror("open infile");
 		close((*pipex).fd1);
 		exit(EXIT_FAILURE);
 	}
 	(*pipex).fd2 = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
 	if ((*pipex).fd2 < 0)
 	{
-		perror("open file2");
-		close_exit(*pipex);
+		perror("open outfile");
+		close((*pipex).fd1);
+		close((*pipex).fd2);
+		exit(EXIT_FAILURE);
 	}
 }
 
-void	get_paths(char **envp, t_pipex *pipex)
+void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 {
-	int		i;
-	char	*path;
+	int		fd[2];
+	pid_t	pid;
 
-	i = 0;
-	while (envp[i] && (check_instr(envp[i], "PATH=") == 0))
-		i++;
-	path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
-	if (!path)
-		close_exit(*pipex);
-	(*pipex).paths = ft_split(path, ':');
-	free(path);
-	if (!(*pipex).paths)
-		close_exit(*pipex);
-	slash_paths(pipex);
-}
-
-void	slash_paths(t_pipex *pipex)
-{
-	int		i;
-	char	*tmp;
-
-	i = 0;
-	while ((*pipex).paths[i])
+	if (pipe(fd) == -1)
 	{
-		tmp = ft_strdup((*pipex).paths[i]);
-		free((*pipex).paths[i]);
-		(*pipex).paths[i] = ft_strjoin(tmp, "/");
-		free(tmp);
-		i++;
+		perror("pipe");
+		close_exit(pipex);
+	}
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		close_exit(pipex);
+	}
+	if (pid == 0)
+	{
+		close(fd[0]);
+		dup2(fd[1], STDOUT);
+		exec_cmd(pipex, argv, envp, k);
+	}
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN);
+		// waitpid(-1, NULL, WNOHANG);
+		waitpid(pid, NULL, 0);
 	}
 }
 
+// int execve(const char *pathname, char *const argv[], char *const envp[]);
+void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
+{
+	char	**cmd;
+	char	*path_cmd;
+
+	get_paths(envp, &pipex);
+	cmd = ft_split(argv[k + 1], ' ');
+	// if (!cmd)
+	// {
+	// 	free_cmd(&pipex);
+	// 	free_paths(&pipex);
+	// 	close_pipe(pipex);
+	// 	close_exit(pipex);
+	// }
+	path_cmd = check_path(pipex.paths, cmd);
+	// if NULL
+	execve(path_cmd, cmd, envp);
+	// if (execve(path_cmd, cmd, envp) == -1)
+	// {
+	// 	perror("execve");
+	// 	free_cmd(&pipex);
+	// 	free(pipex.path_cmd);
+	// 	free_paths(&pipex);
+	// 	close_pipe(pipex);
+	// 	close_exit(pipex);
+	// }
+}
 
 // // checking
 // printf("fd1 %d\n", pipex.fd1);

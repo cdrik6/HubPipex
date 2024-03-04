@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/27 22:57:35 by caguillo          #+#    #+#             */
-/*   Updated: 2024/02/29 20:04:45 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/04 21:35:05 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,13 +146,14 @@ void	pipe_test(void)
 	printf("ici %d\n", pid);
 	if (pid == 0)
 	{
+		close(fd[0]); // close the read end of the pipe
 		write(fd[1], "Hello parent!", 13);
 		close(fd[1]); // close the write end of the pipe
-		close(fd[0]); // close the read end of the pipe
 		exit(EXIT_SUCCESS);
 	}
 	else
 	{
+		close(fd[1]); // close the write end of the pipe
 		i = 0;
 		while (i < 13)
 		{
@@ -161,7 +162,6 @@ void	pipe_test(void)
 		}
 		buffer[13] = 0;
 		close(fd[0]); // close the read end of the pipe
-		close(fd[1]); // close the write end of the pipe
 		printf("Message from child: '%s'\n", buffer);
 		exit(EXIT_SUCCESS);
 	}
@@ -219,8 +219,15 @@ void	fork_unlink_test(void)
 void	wait_test(void)
 {
 	pid_t	pid;
+	int		k;
 
 	pid = fork();
+	k = 0;
+	while (k < 100)
+	{
+		printf("%d - %d\n", k, pid);
+		k++;
+	}
 	if (pid == -1)
 	{
 		perror("fork");
@@ -235,7 +242,9 @@ void	wait_test(void)
 	else
 	{
 		printf("I am the parent process.\n");
+		// printf("avant - %d\n", pid);
 		wait(NULL);
+		printf("apres - %d\n", pid);
 		printf("Child process terminated after a 2s delay.\n");
 	}
 	// return (EXIT_SUCCESS);
