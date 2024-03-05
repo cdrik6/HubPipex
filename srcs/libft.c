@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/03 02:34:33 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/05 00:13:42 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_putstr_fd(int fd, char *str)
 }
 
 // check if s2 is in s1 from start
-int	check_instr(char *s1, char *s2)
+int	check_in_str(char *s1, char *s2)
 {
 	int	i;
 	int	n;

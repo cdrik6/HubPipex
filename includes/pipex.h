@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/04 23:33:43 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/05 00:47:07 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,29 +38,30 @@ typedef struct s_pipex
 	int		fd1;
 	int		fd2;
 	char	**paths;
+	int		fd[2];
 }			t_pipex;
 
 // main.c
 // main
 void		open_files(char *file1, char *file2, t_pipex *pipex);
-void		get_paths(char **envp, t_pipex *pipex);
-void		slash_paths(t_pipex *pipex);
-// void		get_cmds(char **argv, t_pipex *pipex);
-
-// child.c
 void		fork_child(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_cmd(t_pipex pipex, char **argv, char **envp, int k);
+
+// path.c
+void		get_paths(char **envp, t_pipex *pipex);
+void		slash_paths(t_pipex *pipex);
 char		*check_path(char **paths, char **cmd);
+// void		get_cmds(char **argv, t_pipex *pipex);
 
 // free.c
 void		close_exit(t_pipex pipex);
 // void		close_pipe(t_pipex pipex);
 void		free_paths(t_pipex *pipex);
-void		free_cmd(t_pipex *pipex);
+void		free_cmd(char **cmd);
 
 // libft.c
 void		ft_putstr_fd(int fd, char *str);
-int			check_instr(char *s1, char *s2);
+int			check_in_str(char *s1, char *s2);
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strdup(char *s);
 

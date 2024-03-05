@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/04 23:56:39 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/05 01:18:44 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,12 @@ int	main(int argc, char **argv, char **envp)
 		return (perror("dup2 outfile"), 1);
 	fork_child(pipex, argv, envp, 1);
 	exec_cmd(pipex, argv, envp, 2);
-	close_pipe(pipex);
-	// get_paths(envp, &pipex);
+	free_paths(&pipex);
+	close(pipex.fd1);
+	close(pipex.fd2);
+	close(pipex.fd[0]);
+	close(pipex.fd[1]);
+	return (0);
 }
 
 void	open_files(char *file1, char *file2, t_pipex *pipex)
@@ -51,10 +55,10 @@ void	open_files(char *file1, char *file2, t_pipex *pipex)
 
 void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 {
-	int		fd[2];
 	pid_t	pid;
 
-	if (pipe(fd) == -1)
+	// int		fd[2];
+	if (pipe(pipex.fd) == -1)
 	{
 		perror("pipe");
 		close_exit(pipex);
@@ -67,17 +71,21 @@ void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 	}
 	if (pid == 0)
 	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT);
+		close(pipex.fd[0]);
+		dup2(pipex.fd[1], STDOUT);
 		exec_cmd(pipex, argv, envp, k);
 	}
 	else
 	{
-		close(fd[1]);
-		dup2(fd[0], STDIN);
-		// waitpid(-1, NULL, WNOHANG);
-		waitpid(pid, NULL, 0);
+		close(pipex.fd[1]);
+		dup2(pipex.fd[0], STDIN);
+		waitpid(-1, NULL, WNOHANG);
+		// waitpid(pid, NULL, 0);
 	}
+	close(pipex.fd1);
+	close(pipex.fd2);
+	close(pipex.fd[0]);
+	close(pipex.fd[1]);
 }
 
 // int execve(const char *pathname, char *const argv[], char *const envp[]);
@@ -88,25 +96,27 @@ void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
 
 	get_paths(envp, &pipex);
 	cmd = ft_split(argv[k + 1], ' ');
-	// if (!cmd)
-	// {
-	// 	free_cmd(&pipex);
-	// 	free_paths(&pipex);
-	// 	close_pipe(pipex);
-	// 	close_exit(pipex);
-	// }
+	if (!cmd)
+	{
+		free_cmd(cmd);
+		free_paths(&pipex);
+		close_exit(pipex);
+	}
 	path_cmd = check_path(pipex.paths, cmd);
-	// if NULL
-	execve(path_cmd, cmd, envp);
-	// if (execve(path_cmd, cmd, envp) == -1)
-	// {
-	// 	perror("execve");
-	// 	free_cmd(&pipex);
-	// 	free(pipex.path_cmd);
-	// 	free_paths(&pipex);
-	// 	close_pipe(pipex);
-	// 	close_exit(pipex);
-	// }
+	if (!path_cmd)
+	{
+		free_cmd(cmd);
+		free_paths(&pipex);
+		close_exit(pipex);
+	}
+	if (execve(path_cmd, cmd, envp) == -1)
+	{
+		perror("execve");
+		free(path_cmd);
+		free_cmd(cmd);
+		free_paths(&pipex);
+		close_exit(pipex);
+	}
 }
 
 // // checking
