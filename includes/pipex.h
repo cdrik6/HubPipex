@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/06 20:02:42 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/06 23:40:42 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,22 @@ typedef struct s_pipex
 	int		fd2;
 	char	**paths;
 	int		fd[2];
-	//int		status;
+	int		status;
 }			t_pipex;
 
 // main.c
 // main
 void		open_files(char *file1, char *file2, t_pipex *pipex);
 void		fork_child(t_pipex pipex, char **argv, char **envp, int k);
+void		exec_arg(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_cmd(t_pipex pipex, char **argv, char **envp, int k);
+void		exec_abs(t_pipex pipex, char **argv, char **envp, int k);
 
 // path.c
 void		get_paths(char **envp, t_pipex *pipex);
 void		slash_paths(t_pipex *pipex);
 char		*check_path(char **paths, char **cmd);
+int			check_slash(char *str);
 // void		get_cmds(char **argv, t_pipex *pipex);
 
 // free.c
