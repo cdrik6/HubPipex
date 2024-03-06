@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/05 23:35:31 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/06 20:49:13 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,24 @@ void	get_paths(char **envp, t_pipex *pipex)
 	char	*path;
 
 	i = 0;
-	while (envp[i] && (check_in_str(envp[i], "PATH=") == 0))
-		i++;
-	path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
-	if (!path)
-		close_exit(*pipex);
-	(*pipex).paths = ft_split(path, ':');
-	free(path);
-	if (!(*pipex).paths)
+	if (envp)
 	{
-		free_paths(pipex);
-		close_exit(*pipex);
+		while (envp[i] && (check_in_str(envp[i], "PATH=") == 0))
+			i++;
+		path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
+		if (!path)
+			close_exit(*pipex, 1);
+		(*pipex).paths = ft_split(path, ':');
+		free(path);
+		if (!(*pipex).paths)
+		{
+			free_paths(pipex);
+			close_exit(*pipex, 1);
+		}
+		slash_paths(pipex);
 	}
-	slash_paths(pipex);
+	else
+		close_exit(*pipex, 127);
 }
 
 // Only the last paths[i] is NULL
@@ -49,7 +54,7 @@ void	slash_paths(t_pipex *pipex)
 		if (!(*pipex).paths[i])
 		{
 			free_paths(pipex);
-			close_exit(*pipex);
+			close_exit(*pipex, 1);
 		}
 		i++;
 	}
@@ -69,7 +74,7 @@ char	*check_path(char **paths, char **cmd)
 		tmp = ft_strjoin(paths[i], cmd[0]);
 		if (!tmp)
 			return (NULL);
-		if (access(tmp, F_OK) == 0)
+		if (access(tmp, X_OK) == 0)
 			return (tmp);
 		free(tmp);
 		i++;

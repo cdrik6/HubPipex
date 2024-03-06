@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/06 00:30:14 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/06 20:02:42 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@
 # define STDERR 2
 # define ERR_ARG "Wrong number of arguments\n"
 # define ERR_CMD "Command not found\n"
-# define ERR_RO "Permission denied\n"
+# define ERR_ACC "Permission denied\n"
 
 typedef struct s_pipex
 {
@@ -41,7 +41,7 @@ typedef struct s_pipex
 	int		fd2;
 	char	**paths;
 	int		fd[2];
-	int		status;
+	//int		status;
 }			t_pipex;
 
 // main.c
@@ -57,7 +57,7 @@ char		*check_path(char **paths, char **cmd);
 // void		get_cmds(char **argv, t_pipex *pipex);
 
 // free.c
-void		close_exit(t_pipex pipex);
+void		close_exit(t_pipex pipex, int k);
 // void		close_pipe(t_pipex pipex);
 void		free_paths(t_pipex *pipex);
 void		free_cmd(char **cmd);
