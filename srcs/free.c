@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:42:32 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/06 22:29:43 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/07 01:14:01 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ void	close_exit(t_pipex pipex, int k)
 		exit(WEXITSTATUS(pipex.status));
 	else
 		exit(k);
-	
 }
 
 void	free_paths(t_pipex *pipex)
@@ -30,12 +29,15 @@ void	free_paths(t_pipex *pipex)
 	int	i;
 
 	i = 0;
-	while ((*pipex).paths[i])
+	if ((*pipex).paths)
 	{
-		free((*pipex).paths[i]);
-		i++;
+		while ((*pipex).paths[i])
+		{
+			free((*pipex).paths[i]);
+			i++;
+		}
+		free((*pipex).paths);
 	}
-	free((*pipex).paths);
 }
 
 void	free_cmd(char **cmd)
@@ -43,12 +45,15 @@ void	free_cmd(char **cmd)
 	int	i;
 
 	i = 0;
-	while (cmd[i])
+	if (cmd)
 	{
-		free(cmd[i]);
-		i++;
+		while (cmd[i])
+		{
+			free(cmd[i]);
+			i++;
+		}
+		free(cmd);
 	}
-	free(cmd);
 }
 
 // void	close_pipe(t_pipex pipex)

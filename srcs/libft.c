@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/05 00:13:42 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/07 01:10:48 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,10 @@ int	check_in_str(char *s1, char *s2)
 	int	i;
 	int	n;
 
-	i = 0;
-	n = ft_strlen(s2);
 	if (!s1 || !s2)
 		return (0);
+	i = 0;
+	n = ft_strlen(s2);
 	while (s1[i] && s2[i] && i < n)
 	{
 		if (s1[i] == s2[i])
