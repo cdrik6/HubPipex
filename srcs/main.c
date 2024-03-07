@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/07 01:00:09 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/07 20:16:22 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void	open_files(char *file1, char *file2, t_pipex *pipex)
 void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 {
 	pid_t	pid;
-	
+
 	if (pipe(pipex.fd) == -1)
 	{
 		perror("pipe");
@@ -117,9 +117,10 @@ void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
 {
 	char	**cmd;
 	char	*path_cmd;
+	int		i;
 
 	get_paths(envp, &pipex);
-	cmd = ft_split(argv[k + 1], ' ');
+	cmd = ft_split(argv[k + 1], ' ');	
 	if (!cmd)
 	{
 		free_cmd(cmd);
@@ -133,8 +134,7 @@ void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
 		free_cmd(cmd);
 		free_paths(&pipex);
 		close_exit(pipex, 127);
-	}
-	//write(2, "ici\n", 4);
+	}	
 	if (execve(path_cmd, cmd, envp) == -1)
 	{
 		perror("execve");
@@ -162,7 +162,7 @@ void	exec_abs(t_pipex pipex, char **argv, char **envp, int k)
 		ft_putstr_fd(2, ERR_CMD);
 		free_cmd(cmd);
 		close_exit(pipex, 127);
-	}	
+	}
 	if (execve(cmd[0], cmd, envp) == -1)
 	{
 		perror("execve");

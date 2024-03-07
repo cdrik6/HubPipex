@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/07 01:00:18 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/07 20:10:46 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,18 @@ char	*check_path(char **paths, char **cmd)
 	while (paths[i])
 	{
 		//write(2, paths[i], ft_strlen(paths[i]));
+		//write(2, cmd[0], ft_strlen(cmd[0]));
+		if (!cmd[0])
+			return (NULL);
 		tmp = ft_strjoin(paths[i], cmd[0]);		
+		write(2, tmp, ft_strlen(tmp));
 		if (!tmp)
 			return (NULL);
 		if (access(tmp, X_OK) == 0)
+		{
+			write(2, "ici\n", 4);
 			return (tmp);
+		}
 		free(tmp);
 		i++;
 	}
