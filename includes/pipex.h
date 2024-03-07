@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/06 23:40:42 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/07 22:51:52 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,10 @@
 # define ERR_ARG "Wrong number of arguments\n"
 # define ERR_CMD "Command not found\n"
 # define ERR_ACC "Permission denied\n"
+# define EXIT_SUCCESS 0
+# define EXIT_FAILURE 1
+# define EXIT_DENIED 126
+# define EXIT_NOCMD 127
 
 typedef struct s_pipex
 {
@@ -46,7 +50,9 @@ typedef struct s_pipex
 
 // main.c
 // main
-void		open_files(char *file1, char *file2, t_pipex *pipex);
+// void		open_files(char *file1, char *file2, t_pipex *pipex);
+void		open_infile(char *file1, t_pipex *pipex);
+void		open_outfile(char *file2, t_pipex *pipex);
 void		fork_child(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_arg(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_cmd(t_pipex pipex, char **argv, char **envp, int k);
@@ -60,6 +66,7 @@ int			check_slash(char *str);
 // void		get_cmds(char **argv, t_pipex *pipex);
 
 // free.c
+void		perror_close_exit(char *err, t_pipex pipex, int k);
 void		close_exit(t_pipex pipex, int k);
 // void		close_pipe(t_pipex pipex);
 void		free_paths(t_pipex *pipex);
@@ -70,6 +77,8 @@ void		ft_putstr_fd(int fd, char *str);
 int			check_in_str(char *s1, char *s2);
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strdup(char *s);
+//*******
+void	ft_putnbr_fd(int n, int fd);
 
 // ft_split.c
 char		**ft_split(char const *s, char c);

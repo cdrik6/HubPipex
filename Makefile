@@ -6,7 +6,7 @@
 #    By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/25 23:32:02 by caguillo          #+#    #+#              #
-#    Updated: 2024/03/04 23:55:04 by caguillo         ###   ########.fr        #
+#    Updated: 2024/03/07 22:32:25 by caguillo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ SRCS		=	./srcs/main.c \
 				./srcs/path.c \
 				./srcs/free.c \
 				./srcs/get_next_line.c \
+				./srcs/ft_putnbr_fd.c \
 				./srcs/get_next_line_utils.c
 
 #SRCS_BONUS	=	./srcs/main.c \

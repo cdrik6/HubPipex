@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/07 20:16:22 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/07 22:52:20 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 5)
 		return (ft_putstr_fd(2, ERR_ARG), 1);
 	//
-	open_files(argv[1], argv[argc - 1], &pipex);
+	open_infile(argv[1], &pipex);
+	open_outfile(argv[argc - 1], &pipex);
 	//
 	d = dup2(pipex.fd1, STDIN);
 	close(pipex.fd1);
 	if (d == -1)
-		return (perror("dup2 infile"), 1);
+		return (perror("dup2 infile"), close(pipex.fd2), 1);
 	d = dup2(pipex.fd2, STDOUT);
 	close(pipex.fd2);
 	if (d == -1)
@@ -37,7 +38,7 @@ int	main(int argc, char **argv, char **envp)
 	return (0);
 }
 
-void	open_files(char *file1, char *file2, t_pipex *pipex)
+void	open_infile(char *file1, t_pipex *pipex)
 {
 	if (access(file1, R_OK) == 0)
 	{
@@ -49,11 +50,12 @@ void	open_files(char *file1, char *file2, t_pipex *pipex)
 		}
 	}
 	else
-	{
 		perror("access");
-		ft_putstr_fd(2, ERR_ACC);
-		exit(EXIT_FAILURE);
-	}
+}
+
+// ft_putstr_fd(2, ERR_ACC);
+void	open_outfile(char *file2, t_pipex *pipex)
+{
 	(*pipex).fd2 = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
 	if ((*pipex).fd2 < 0)
 	{
@@ -64,29 +66,22 @@ void	open_files(char *file1, char *file2, t_pipex *pipex)
 	if (access(file2, W_OK) != 0)
 	{
 		perror("access");
-		ft_putstr_fd(2, ERR_ACC);
 		close((*pipex).fd1);
 		close((*pipex).fd2);
-		exit(EXIT_FAILURE);
+		exit(EXIT_DENIED);
 	}
 }
 
-// waitpid(-1, NULL, WNOHANG); //waitpid(pid, &(pipex.status), 0);
+// waitpid(-1, NULL, WNOHANG); // waitpid(pid, NULL, 0);
 void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 {
 	pid_t	pid;
 
 	if (pipe(pipex.fd) == -1)
-	{
-		perror("pipe");
-		close_exit(pipex, 1);
-	}
+		perror_close_exit("pipe", pipex, 1);
 	pid = fork();
 	if (pid == -1)
-	{
-		perror("fork");
-		close_exit(pipex, 1);
-	}
+		perror_close_exit("fork", pipex, 1);
 	if (pid == 0)
 	{
 		close(pipex.fd[0]);
@@ -99,8 +94,12 @@ void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 		close(pipex.fd[1]);
 		dup2(pipex.fd[0], STDIN);
 		close(pipex.fd[0]);
-		// waitpid(pid, NULL, 0);
 		waitpid(pid, &(pipex.status), 0);
+		// if (WEXITSTATUS(pipex.status) != 0)
+		// {
+		// 	ft_putstr_fd(2, "exit status non nul\n");
+		// 	ft_putnbr_fd(WEXITSTATUS(pipex.status), 2);
+		// }
 	}
 }
 
@@ -117,31 +116,38 @@ void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
 {
 	char	**cmd;
 	char	*path_cmd;
-	int		i;
 
 	get_paths(envp, &pipex);
-	cmd = ft_split(argv[k + 1], ' ');	
+	if (ft_strlen(argv[k + 1]) == 0)
+	{
+		// ft_putstr_fd(2, "ici\n");
+		ft_putstr_fd(2, ERR_ACC);
+		free_paths(&pipex);
+		close_exit(pipex, EXIT_DENIED);
+	}
+	else
+		cmd = ft_split(argv[k + 1], ' ');
 	if (!cmd)
 	{
 		free_cmd(cmd);
 		free_paths(&pipex);
-		close_exit(pipex, 1);
+		close_exit(pipex, EXIT_FAILURE);
 	}
-	path_cmd = check_path(pipex.paths, cmd);	
+	path_cmd = check_path(pipex.paths, cmd);
 	if (!path_cmd)
 	{
 		ft_putstr_fd(2, ERR_CMD);
 		free_cmd(cmd);
 		free_paths(&pipex);
-		close_exit(pipex, 127);
-	}	
+		close_exit(pipex, EXIT_NOCMD);
+	}
 	if (execve(path_cmd, cmd, envp) == -1)
 	{
 		perror("execve");
 		free(path_cmd);
 		free_cmd(cmd);
 		free_paths(&pipex);
-		close_exit(pipex, 127);
+		close_exit(pipex, EXIT_FAILURE);
 	}
 }
 
@@ -158,15 +164,56 @@ void	exec_abs(t_pipex pipex, char **argv, char **envp, int k)
 	}
 	if (access(cmd[0], X_OK) != 0)
 	{
+		if (access(cmd[0], F_OK) != 0)
+		{
+			perror("access");
+			ft_putstr_fd(2, ERR_CMD);
+			free_cmd(cmd);
+			close_exit(pipex, EXIT_NOCMD);
+		}
 		perror("access");
-		ft_putstr_fd(2, ERR_CMD);
+		ft_putstr_fd(2, ERR_ACC);
 		free_cmd(cmd);
-		close_exit(pipex, 127);
+		close_exit(pipex, EXIT_DENIED);
 	}
 	if (execve(cmd[0], cmd, envp) == -1)
 	{
 		perror("execve");
 		free_cmd(cmd);
-		close_exit(pipex, 127);
+		close_exit(pipex, EXIT_FAILURE);
 	}
 }
+
+// void	open_files(char *file1, char *file2, t_pipex *pipex)
+// {
+// 	if (access(file1, R_OK) == 0)
+// 	{
+// 		(*pipex).fd1 = open(file1, O_RDONLY);
+// 		if ((*pipex).fd1 < 0)
+// 		{
+// 			perror("open infile");
+// 			exit(EXIT_FAILURE);
+// 		}
+// 	}
+// 	else
+// 	{
+// 		perror("access");
+// 		ft_putstr_fd(2, ERR_ACC);
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	(*pipex).fd2 = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
+// 	if ((*pipex).fd2 < 0)
+// 	{
+// 		perror("open outfile");
+// 		close((*pipex).fd1);
+// 		exit(EXIT_FAILURE);
+// 	}
+// 	if (access(file2, W_OK) != 0)
+// 	{
+// 		perror("access");
+// 		ft_putstr_fd(2, ERR_ACC);
+// 		close((*pipex).fd1);
+// 		close((*pipex).fd2);
+// 		exit(EXIT_FAILURE);
+// 	}
+// }
