@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/08 01:54:16 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/08 04:09:48 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,12 +111,19 @@ void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 		dup2(pipex.fd[0], STDIN);
 		close(pipex.fd[0]);
 		// waitpid(pid, &(pipex.status), WNOHANG);
-		waitpid(pid, &(pipex.status), 0);
+		waitpid(pid, &(pipex.status), WNOHANG);
+		// wait(&(pipex.status));
 		// if (WEXITSTATUS(pipex.status) != 0)
 		// {
 		// 	ft_putstr_fd(2, "exit status non nul\n");
 		// 	ft_putnbr_fd(WEXITSTATUS(pipex.status), 2);
 		// }
+		if (WIFEXITED(pipex.status))
+		{
+			waitpid(pid, &(pipex.status), 0);
+		}
+		else
+			waitpid(pid, &(pipex.status), WNOHANG);
 	}
 }
 
