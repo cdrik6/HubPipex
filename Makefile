@@ -6,7 +6,7 @@
 #    By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/25 23:32:02 by caguillo          #+#    #+#              #
-#    Updated: 2024/03/07 22:32:25 by caguillo         ###   ########.fr        #
+#    Updated: 2024/03/08 19:30:14 by caguillo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,6 +14,7 @@ NAME		=	pipex
 #NAME_BONUS	=	pipex_bonus
 
 SRCS		=	./srcs/main.c \
+				./srcs/child.c \
 				./srcs/ft_split.c \
 				./srcs/libft.c \
 				./srcs/path.c \
