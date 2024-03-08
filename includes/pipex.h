@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/07 22:51:52 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/08 01:46:55 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ typedef struct s_pipex
 	char	**paths;
 	int		fd[2];
 	int		status;
+	int 	err_outf;
 }			t_pipex;
 
 // main.c

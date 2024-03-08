@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/07 22:52:20 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/08 01:54:16 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,25 +50,41 @@ void	open_infile(char *file1, t_pipex *pipex)
 		}
 	}
 	else
-		perror("access");
+		perror("infile access");
 }
 
-// ft_putstr_fd(2, ERR_ACC);
+// else exist and no-write
 void	open_outfile(char *file2, t_pipex *pipex)
 {
-	(*pipex).fd2 = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
-	if ((*pipex).fd2 < 0)
+	if (access(file2, F_OK) != 0)
 	{
-		perror("open outfile");
-		close((*pipex).fd1);
-		exit(EXIT_FAILURE);
+		(*pipex).fd2 = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
+		if ((*pipex).fd2 < 0)
+		{
+			perror("open outfile");
+			close((*pipex).fd1);
+			exit(EXIT_FAILURE);
+		}
 	}
-	if (access(file2, W_OK) != 0)
+	else if (access(file2, W_OK) == 0)
 	{
-		perror("access");
-		close((*pipex).fd1);
-		close((*pipex).fd2);
-		exit(EXIT_DENIED);
+		(*pipex).fd2 = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
+		if ((*pipex).fd2 < 0)
+		{
+			perror("open outfile");
+			close((*pipex).fd1);
+			exit(EXIT_FAILURE);
+		}
+		// close((*pipex).fd1);
+		// close((*pipex).fd2);
+		// exit(EXIT_DENIED);
+	}
+	else
+	{
+		perror("outfile access");
+		(*pipex).err_outf = 1;
+		//(*pipex).fd2 = open(file2, O_RDONLY);
+		// ft_putnbr_fd((*pipex).fd2, 2);
 	}
 }
 
@@ -94,6 +110,7 @@ void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 		close(pipex.fd[1]);
 		dup2(pipex.fd[0], STDIN);
 		close(pipex.fd[0]);
+		// waitpid(pid, &(pipex.status), WNOHANG);
 		waitpid(pid, &(pipex.status), 0);
 		// if (WEXITSTATUS(pipex.status) != 0)
 		// {
@@ -140,6 +157,13 @@ void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
 		free_cmd(cmd);
 		free_paths(&pipex);
 		close_exit(pipex, EXIT_NOCMD);
+	}
+	if (ft_strlen(path_cmd) == 0)
+	{
+		ft_putstr_fd(2, ERR_ACC);
+		free_cmd(cmd);
+		free_paths(&pipex);
+		close_exit(pipex, EXIT_DENIED);
 	}
 	if (execve(path_cmd, cmd, envp) == -1)
 	{
