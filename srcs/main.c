@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/08 20:17:04 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/09 01:06:40 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,11 @@ int	main(int argc, char **argv, char **envp)
 	fork_child(pipex, argv, envp, 1);
 	// fork_child(pipex, argv, envp, 2);
 	// exec_arg(pipex, argv, envp, 2);
-	//wait(&(pipex.status));	
-	//waitpid(-1, &(pipex.status), WNOHANG);
+	// wait(&(pipex.status));
+	// waitpid(-1, NULL, WNOHANG);
+	// ft_putnbr_fd(pipex.status[1], 2);
+	// ft_putnbr_fd(pipex.status[0], 2);
+	// exit(pipex.status[1]);
 	return (0);
 }
 
@@ -93,7 +96,6 @@ void	open_outfile(char *file2, t_pipex *pipex)
 		// ft_putnbr_fd((*pipex).fd2, 2);
 	}
 }
-
 
 // void	open_files(char *file1, char *file2, t_pipex *pipex)
 // {

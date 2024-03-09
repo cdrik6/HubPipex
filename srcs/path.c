@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/07 23:42:31 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/09 00:49:31 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,19 @@ void	get_paths(char **envp, t_pipex *pipex)
 		if (!path)
 		{
 			ft_putstr_fd(2, ERR_CMD);
-			close_exit(*pipex, EXIT_NOCMD);
+			close_exit(pipex, EXIT_NOCMD);
 		}
 		(*pipex).paths = ft_split(path, ':');
 		free(path);
 		if (!(*pipex).paths)
 		{
 			free_paths(pipex);
-			close_exit(*pipex, EXIT_FAILURE);
+			close_exit(pipex, EXIT_FAILURE);
 		}
 		slash_paths(pipex);
 	}
 	else
-		close_exit(*pipex, EXIT_FAILURE);
+		close_exit(pipex, EXIT_FAILURE);
 }
 
 // Only the last paths[i] is NULL
@@ -57,7 +57,7 @@ void	slash_paths(t_pipex *pipex)
 		if (!(*pipex).paths[i])
 		{
 			free_paths(pipex);
-			close_exit(*pipex, 1);
+			close_exit(pipex, 1);
 		}
 		i++;
 	}

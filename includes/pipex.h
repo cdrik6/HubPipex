@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/08 18:48:09 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/09 00:15:33 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_pipex
 	int		fd2;
 	char	**paths;
 	int		fd[2];
-	int		status;
+	int		status[2];
 	int 	err_outf;
 }			t_pipex;
 
@@ -68,7 +68,7 @@ int			check_slash(char *str);
 
 // free.c
 void		perror_close_exit(char *err, t_pipex pipex, int k);
-void		close_exit(t_pipex pipex, int k);
+void		close_exit(t_pipex *pipex, int k);
 // void		close_pipe(t_pipex pipex);
 void		free_paths(t_pipex *pipex);
 void		free_cmd(char **cmd);
