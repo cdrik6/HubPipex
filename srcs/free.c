@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:42:32 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/09 01:07:19 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/09 22:06:05 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,11 @@ void	close_exit(t_pipex *pipex, int k)
 	close((*pipex).fd2);
 	close((*pipex).fd[0]);
 	close((*pipex).fd[1]);
+	(*pipex).err_outf = 12;
+	// ft_putnbr_fd(WEXITSTATUS((*pipex).status[0]), 2);
+	// ft_putnbr_fd(WEXITSTATUS((*pipex).status[1]), 2);
+	// ft_putnbr_fd(k, 2);
+	exit (k);
 	
 	if (WEXITSTATUS((*pipex).status[1]) != 0)
 	{		

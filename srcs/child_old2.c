@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:28:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/09 22:39:11 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/09 01:49:19 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,60 +35,42 @@ void	fork_child(t_pipex pipex, char **argv, char **envp, int k)
 		if (k == 1)
 		{
 			fork_child(pipex, argv, envp, 2);
-			// ft_putstr_fd(2, "\npid1 = ");
-			// ft_putnbr_fd(pid[1], 2);
-			waitpid(pid[0], &(pipex.status[0]), 0);
-			waitpid(pid[1], &(pipex.status[1]), 0);
-			ft_putstr_fd(2, "\n");
-			ft_putnbr_fd(WEXITSTATUS((pipex).status[0]), 2);
-			ft_putstr_fd(2, "\n");
-			ft_putnbr_fd(WEXITSTATUS((pipex).status[1]), 2);
-			ft_putstr_fd(2, "\n");
-			// if (WIFEXITED(pipex.status[1]))
-			// {
-			// 	// ft_putnbr_fd((pipex).err_outf, 2);
-			// 	ft_putstr_fd(2, "\nexitcode 1 = ");
-			// 	ft_putnbr_fd(WEXITSTATUS(pipex.status[1]), 2);
-			// }
-			// if (WIFEXITED(pipex.status[0]))
-			// {
-			// 	// ft_putnbr_fd((pipex).err_outf, 2);
-			// 	ft_putstr_fd(2, "\nexitcode 0 = ");
-			// 	ft_putnbr_fd(WEXITSTATUS(pipex.status[0]), 2);
-			// }
+			// waitpid(-1, &(pipex.status), 0);
 		}
-		waitpid(pid[0], &(pipex.status[0]), 0); // waitpid(-1, NULL, 0);
-		// if (WIFEXITED(pipex.status[1]))
+		// // waitpid(pid, &(pipex.status[k - 1]), WNOHANG);
+			// no leak but KO sleep
+		// // waitpid(-1, &(pipex.status[k - 1]), WNOHANG);
+			// no leak but KO sleep
+		// waitpid(-1, &(pipex.status[k - 1]), 0);
+			//leaks 'head' mais c'est le 'yes' en fait cf valgrind
+		// // waitpid(pid, &(pipex.status[k - 1]), 0); //zombie + leaks head
+		//
+		// if (k == 1)
 		// {
-		// 	// ft_putnbr_fd((pipex).err_outf, 2);
-		// 	ft_putstr_fd(2, "\nexitcode 1 = ");
-		// 	ft_putnbr_fd(WEXITSTATUS(pipex.status[1]), 2);
+		waitpid(-1, &(pipex.status[0]), 0);
 		// }
-		// if (WIFEXITED(pipex.status[0]))
+		// if (k == 2)
 		// {
-		// 	// ft_putnbr_fd((pipex).err_outf, 2);
-		// 	ft_putstr_fd(2, "\nexitcode 0 = ");
-		// 	ft_putnbr_fd(WEXITSTATUS(pipex.status[0]), 2);
-		// }
-		ft_putstr_fd(2, "\n");
-		ft_putnbr_fd(WEXITSTATUS((pipex).status[0]), 2);
-		ft_putstr_fd(2, "\n");
-		ft_putnbr_fd(WEXITSTATUS((pipex).status[1]), 2);
-		// waitpid(pid[1], &(pipex.status[1]), 0);
-		// ft_putnbr_fd((pipex).err_outf, 2);
-		// ft_putstr_fd(2, "\n");
-		// ft_putnbr_fd(WEXITSTATUS((pipex).status[0]), 2);
-		// ft_putstr_fd(2, "\n");
-		// ft_putnbr_fd(WEXITSTATUS((pipex).status[1]), 2);
-		// ft_putstr_fd(2, "\n");
-		// // ft_putstr_fd(2, "\npid0 = ");
-		// // ft_putnbr_fd(pid[0], 2);
-		// // waitpid(pid[0], &(pipex.status[0]), 0);
-		// if (WIFEXITED(pipex.status[0]))
+		waitpid(-1, &(pipex.status[1]), 0);
+		//}
+		// waitpid(pid[k - 1], &(pipex.status[k - 1]), 0);
+		// ft_putstr_fd(2, "\ncmd1 - ");
+		// ft_putnbr_fd(WEXITSTATUS(pipex.status[0]), 2);
+		// ft_putstr_fd(2, "\ncmd2 - ");
+		// ft_putnbr_fd(WEXITSTATUS(pipex.status[1]), 2);
+		if (WEXITSTATUS(pipex.status[0]) != 0)
+		{
+			// ft_putnbr_fd(k, 2);
+			// ft_putstr_fd(2, "exit status non nul\n");
+			// ft_putnbr_fd(WEXITSTATUS(pipex.status[k - 1]), 2);
+			exit(WEXITSTATUS(pipex.status[0]));
+		}
+		// if (WIFEXITED(pipex.status))
 		// {
-		// 	ft_putstr_fd(2, "\nexitcode 3 = ");
-		// 	ft_putnbr_fd(WEXITSTATUS(pipex.status[0]), 2);
+		// 	waitpid(pid, &(pipex.status), 0);
 		// }
+		// else
+		// 	waitpid(pid, &(pipex.status), WNOHANG);
 	}
 }
 
