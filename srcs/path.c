@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/09 00:49:31 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/10 21:51:10 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	get_paths(char **envp, t_pipex *pipex)
 		path = ft_substr(envp[i], 5, ft_strlen(envp[i]) - 5);
 		if (!path)
 		{
-			ft_putstr_fd(2, ERR_CMD);
+			ft_putstr_fd(ERR_CMD, 2);
 			close_exit(pipex, EXIT_NOCMD);
 		}
 		(*pipex).paths = ft_split(path, ':');

@@ -6,13 +6,13 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/07 19:05:58 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/10 21:46:12 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	ft_putstr_fd(int fd, char *str)
+void	ft_putstr_fd(char *str, int fd)
 {
 	if (!str)
 		return ;

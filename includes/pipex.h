@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/10 01:07:21 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/11 01:29:27 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,24 @@
 
 typedef struct s_pipex
 {
-	int		fd1;
-	int		fd2;
+	int		fd_in;
+	int		fd_out;
 	char	**paths;
 	int		fd[2];
-	int		status[2];
-	int 	err_outf;
+	int		status;
+	int		w_out;
 	pid_t	pid;
 }			t_pipex;
 
 // main.c
 // main
-// void		open_files(char *file1, char *file2, t_pipex *pipex);
 void		open_infile(char *file1, t_pipex *pipex);
 void		open_outfile(char *file2, t_pipex *pipex);
-void		fork_child(t_pipex pipex, char **argv, char **envp, int k);
+int			wait_exitcode(t_pipex pipex);
+
+// child.c
+void		child_in(t_pipex *pipex, char **argv, char **envp);
+void		child_out(t_pipex *pipex, char **argv, char **envp);
 void		exec_arg(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_cmd(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_abs(t_pipex pipex, char **argv, char **envp, int k);
@@ -70,17 +73,16 @@ int			check_slash(char *str);
 // free.c
 void		perror_close_exit(char *err, t_pipex pipex, int k);
 void		close_exit(t_pipex *pipex, int k);
-// void		close_pipe(t_pipex pipex);
 void		free_paths(t_pipex *pipex);
 void		free_cmd(char **cmd);
+// void		close_pipe(t_pipex pipex);
 
 // libft.c
-void		ft_putstr_fd(int fd, char *str);
+void		ft_putstr_fd(char *str, int fd);
 int			check_in_str(char *s1, char *s2);
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strdup(char *s);
-//*******
-void	ft_putnbr_fd(int n, int fd);
+// void		ft_putnbr_fd(int n, int fd);
 
 // ft_split.c
 char		**ft_split(char const *s, char c);

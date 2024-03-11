@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:42:32 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/09 22:06:05 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/11 01:38:48 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 void	perror_close_exit(char *err, t_pipex pipex, int k)
 {
 	perror(err);
-	close(pipex.fd1);
-	close(pipex.fd2);
+	close(pipex.fd_in);
+	close(pipex.fd_out);
 	close(pipex.fd[0]);
 	close(pipex.fd[1]);
 	exit(k);
@@ -24,37 +24,11 @@ void	perror_close_exit(char *err, t_pipex pipex, int k)
 
 void	close_exit(t_pipex *pipex, int k)
 {
-	close((*pipex).fd1);
-	close((*pipex).fd2);
+	close((*pipex).fd_in);
+	close((*pipex).fd_out);
 	close((*pipex).fd[0]);
-	close((*pipex).fd[1]);
-	(*pipex).err_outf = 12;
-	// ft_putnbr_fd(WEXITSTATUS((*pipex).status[0]), 2);
-	// ft_putnbr_fd(WEXITSTATUS((*pipex).status[1]), 2);
-	// ft_putnbr_fd(k, 2);
-	exit (k);
-	
-	if (WEXITSTATUS((*pipex).status[1]) != 0)
-	{		
-		// ft_putstr_fd(2, "exit status\n");
-		// ft_putnbr_fd(WEXITSTATUS(pipex.status[1]), 2);
-		(*pipex).status[1] = WEXITSTATUS((*pipex).status[1]);
-		exit(WEXITSTATUS((*pipex).status[1]));
-	}
-	else if ((*pipex).err_outf != 0)
-	{
-		// ft_putstr_fd(2, "ici\n");
-		(*pipex).status[1] = (*pipex).err_outf;
-		exit((*pipex).err_outf);
-	}
-	else
-	{
-		
-		//ft_putstr_fd(2, "la\n");
-		(*pipex).status[1] = k;
-		//ft_putnbr_fd((*pipex).status[1], 2);
-		exit(k);
-	}
+	close((*pipex).fd[1]);	
+	exit(k);	
 }
 
 void	free_paths(t_pipex *pipex)
