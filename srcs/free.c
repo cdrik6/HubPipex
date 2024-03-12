@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:42:32 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/11 01:38:48 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/12 20:04:16 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ void	perror_close_exit(char *err, t_pipex pipex, int k)
 	exit(k);
 }
 
-void	close_exit(t_pipex *pipex, int k)
+void	close_exit(t_pipex pipex, int k)
 {
-	close((*pipex).fd_in);
-	close((*pipex).fd_out);
-	close((*pipex).fd[0]);
-	close((*pipex).fd[1]);	
+	close(pipex.fd_in);
+	close(pipex.fd_out);
+	close(pipex.fd[0]);
+	close(pipex.fd[1]);	
 	exit(k);	
 }
 

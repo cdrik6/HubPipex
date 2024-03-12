@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/10 21:51:10 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/12 23:51:58 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,19 @@ void	get_paths(char **envp, t_pipex *pipex)
 		if (!path)
 		{
 			ft_putstr_fd(ERR_CMD, 2);
-			close_exit(pipex, EXIT_NOCMD);
+			close_exit(*pipex, EXIT_NOCMD);
 		}
 		(*pipex).paths = ft_split(path, ':');
 		free(path);
 		if (!(*pipex).paths)
 		{
 			free_paths(pipex);
-			close_exit(pipex, EXIT_FAILURE);
+			close_exit(*pipex, EXIT_FAILURE);
 		}
 		slash_paths(pipex);
 	}
 	else
-		close_exit(pipex, EXIT_FAILURE);
+		close_exit(*pipex, EXIT_FAILURE);
 }
 
 // Only the last paths[i] is NULL
@@ -57,7 +57,7 @@ void	slash_paths(t_pipex *pipex)
 		if (!(*pipex).paths[i])
 		{
 			free_paths(pipex);
-			close_exit(pipex, 1);
+			close_exit(*pipex, 1);
 		}
 		i++;
 	}
@@ -75,17 +75,14 @@ char	*check_path(char **paths, char **cmd)
 	while (paths[i])
 	{
 		if (cmd[0] == NULL)
-		{
-			// ft_putstr_fd(2, "ici\n");
 			return (NULL);
-		}
 		tmp = ft_strjoin(paths[i], cmd[0]);
 		if (!tmp)
 			return (NULL);
 		if (access(tmp, X_OK) == 0)
 			return (tmp);
-		if (access(tmp, F_OK) == 0)
-			return ("");
+		// if (access(tmp, F_OK) == 0)
+		// 	return ("");
 		free(tmp);
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/12 01:07:11 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/12 21:18:56 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,17 @@
 # define STDIN 0
 # define STDOUT 1
 # define STDERR 2
-# define ERR_ARG "Wrong number of arguments\n"
-# define ERR_CMD "Command not found\n"
-# define ERR_ACC "Permission denied\n"
+# define USAGE "Usage: ./pipex INFILE cmd1 cmd2 OUTFILE\n"
+# define ERR_ARG "pipex: Wrong number of arguments\n"
+# define ERR_CMD ": Command not found\n"
+# define ERR_ACC "pipex: Permission denied\n"
+# define ERR_ACX ": Permission denied\n"
+# define ERR_DIR ": No such file or directory\n"
 # define EXIT_SUCCESS 0
 # define EXIT_FAILURE 1
 # define EXIT_DENIED 126
 # define EXIT_NOCMD 127
+# define EXIT_NODIR 127
 
 typedef struct s_pipex
 {
@@ -46,7 +50,7 @@ typedef struct s_pipex
 	char	**paths;
 	int		fd[2];
 	int		status;
-	//int		w_out;	
+	// int		w_out;
 	pid_t	pid;
 }			t_pipex;
 
@@ -58,7 +62,7 @@ int			wait_exitcode(t_pipex pipex);
 
 // child.c
 void		child_in(t_pipex *pipex, char **argv, char **envp);
-void		child_out(t_pipex *pipex, char **argv, char **envp);
+void		child_out(t_pipex *pipex, char **argv, char **envp, int argc);
 void		exec_arg(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_cmd(t_pipex pipex, char **argv, char **envp, int k);
 void		exec_abs(t_pipex pipex, char **argv, char **envp, int k);
@@ -72,7 +76,7 @@ int			check_slash(char *str);
 
 // free.c
 void		perror_close_exit(char *err, t_pipex pipex, int k);
-void		close_exit(t_pipex *pipex, int k);
+void		close_exit(t_pipex pipex, int k);
 void		free_paths(t_pipex *pipex);
 void		free_cmd(char **cmd);
 // void		close_pipe(t_pipex pipex);
