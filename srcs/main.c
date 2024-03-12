@@ -6,11 +6,12 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/11 01:32:37 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/12 02:08:53 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+#include <bits/fcntl-linux.h>
 #include <errno.h>
 
 int	main(int argc, char **argv, char **envp)
@@ -21,21 +22,8 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 5)
 		return (ft_putstr_fd(ERR_ARG, 2), 1);
 	//
-	open_infile(argv[1], &pipex);         /****/
-	open_outfile(argv[argc - 1], &pipex); /*********/
-	//
-	// d = dup2(pipex.fd_in, STDIN);
-	// close(pipex.fd_in);
-	// if (d == -1)
-	// 	return (perror("dup2 infile"), close(pipex.fd_out), 1);
-	//
-	// d = dup2(pipex.fd_out, STDOUT);
-	// close(pipex.fd_out);
-	// if (d == -1)
-	// 	return (perror("dup2 outfile"), 1);
-	//
 	if (pipe(pipex.fd) == -1)
-		perror_close_exit("pipe", pipex, 1);
+		perror_close_exit("pipex: pipe", pipex, 1);
 	child_in(&pipex, argv, envp);
 	child_out(&pipex, argv, envp);
 	return (wait_exitcode(pipex));
@@ -53,58 +41,99 @@ int	wait_exitcode(t_pipex pipex)
 			if (WIFEXITED(pipex.status))
 				exitcode = WEXITSTATUS(pipex.status);
 		}
-	}
-	if (pipex.w_out == -1)
-		exitcode = 1;
+	}	
 	return (exitcode);
 }
 
-void	open_infile(char *file1, t_pipex *pipex)
+// if exist and readable --> open
+// else exit (from child)
+void	open_infile(char *infile, t_pipex *pipex)
 {
-	if (access(file1, R_OK) == 0)
+	char	*tmp;
+
+	if (access(infile, R_OK) == 0)
 	{
-		(*pipex).fd_in = open(file1, O_RDONLY);
+		(*pipex).fd_in = open(infile, O_RDONLY);
 		if ((*pipex).fd_in < 0)
 		{
-			perror("open infile");
+			tmp = ft_strjoin("pipex: ", infile);
+			perror(tmp);
+			free(tmp);
+			close((*pipex).fd[0]);
+			close((*pipex).fd[1]);
 			exit(EXIT_FAILURE);
 		}
 	}
 	else
-		perror("infile access");
+	{
+		tmp = ft_strjoin("pipex: ", infile);
+		perror(tmp);
+		free(tmp);
+		close((*pipex).fd[0]);
+		close((*pipex).fd[1]);
+		exit(EXIT_FAILURE);
+	}
 }
 
-// else exist and no-write
-void	open_outfile(char *file2, t_pipex *pipex)
+// if don't exist --> open/create en write
+// if exist in write mode --> open/trunc
+// if write not possible--> error + exit
+void	open_outfile(char *outfile, t_pipex *pipex)
 {
-	if (access(file2, F_OK) != 0)
+	char	*tmp;
+
+	(*pipex).fd_out = open(outfile, O_WRONLY | O_TRUNC | O_CREAT, 0644);
+	if ((*pipex).fd_out < 0)
 	{
-		(*pipex).fd_out = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
-		if ((*pipex).fd_out < 0)
-		{
-			perror("open outfile");
-			close((*pipex).fd_in);
-			exit(EXIT_FAILURE);
-		}
-	}
-	else if (access(file2, W_OK) == 0)
-	{
-		(*pipex).fd_out = open(file2, O_TRUNC | O_CREAT | O_RDWR, 0644);
-		if ((*pipex).fd_out < 0)
-		{
-			perror("open outfile");
-			close((*pipex).fd_in);
-			exit(EXIT_FAILURE);
-		}
-		// close((*pipex).fd1);
-		// close((*pipex).fd2);
-		// exit(EXIT_DENIED);
-	}
-	else
-	{
-		perror("outfile access");
-		(*pipex).w_out = -1;
-		//(*pipex).fd2 = open(file2, O_RDONLY);
-		// ft_putnbr_fd((*pipex).fd2, 2);
+		tmp = ft_strjoin("pipex: ", outfile);
+		perror(tmp);
+		free(tmp);		
+		close((*pipex).fd[0]);
+		close((*pipex).fd[1]);
+		exit(EXIT_FAILURE);
 	}
 }
+
+// // if don't exist --> open/create
+// // elseif exist in write mode --> open/trunc
+// // else exist and no-write --> error
+// void	open_outfile(char *outfile, t_pipex *pipex)
+// {
+// 	if (access(outfile, F_OK) != 0)
+// 	{
+// 		(*pipex).fd_out = open(outfile, O_TRUNC | O_CREAT | O_RDWR, 0644);
+// 		if ((*pipex).fd_out < 0)
+// 		{
+// 			ft_putstr_fd("pipex: ", 2);
+// 			perror(outfile);
+// 			// close((*pipex).fd_in);
+// 			//(*pipex).w_out = -1;
+// 			close((*pipex).fd[0]);
+// 			close((*pipex).fd[1]);
+// 			exit(EXIT_FAILURE);
+// 		}
+// 	}
+// 	else if (access(outfile, W_OK) == 0)
+// 	{
+// 		(*pipex).fd_out = open(outfile, O_TRUNC | O_CREAT | O_RDWR, 0644);
+// 		if ((*pipex).fd_out < 0)
+// 		{
+// 			ft_putstr_fd("pipex: ", 2);
+// 			perror(outfile);
+// 			// close((*pipex).fd_in);
+// 			//(*pipex).w_out = -1;
+// 			close((*pipex).fd[0]);
+// 			close((*pipex).fd[1]);
+// 			exit(EXIT_FAILURE);
+// 		}
+// 	}
+// 	else
+// 	{
+// 		ft_putstr_fd("pipex: ", 2);
+// 		perror(outfile);
+// 		//(*pipex).w_out = -1;
+// 		close((*pipex).fd[0]);
+// 		close((*pipex).fd[1]);
+// 		exit(EXIT_FAILURE);
+// 	}
+// }

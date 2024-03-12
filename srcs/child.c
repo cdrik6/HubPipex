@@ -6,24 +6,24 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:28:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/11 01:10:21 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/12 02:05:16 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-// pointeur not useful
 void	child_in(t_pipex *pipex, char **argv, char **envp)
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (pid == -1)
-		perror_close_exit("fork", *pipex, 1);
+		perror_close_exit("pipex: fork", *pipex, 1);
 	if (pid == 0)
 	{
-		close((*pipex).fd[0]);
-		close((*pipex).fd_out);
+		open_infile(argv[1], pipex);
+		//
+		close((*pipex).fd[0]);		
 		//
 		dup2((*pipex).fd_in, STDIN);
 		close((*pipex).fd_in);
@@ -32,29 +32,32 @@ void	child_in(t_pipex *pipex, char **argv, char **envp)
 		close((*pipex).fd[1]);
 		exec_arg((*pipex), argv, envp, 1);
 	}
-	close((*pipex).fd[1]);
-	close((*pipex).fd_in);
+	// close((*pipex).fd[1]);	
 }
 
 void	child_out(t_pipex *pipex, char **argv, char **envp)
 {
+	int	argc;
+
+	argc = 5;
 	(*pipex).pid = fork();
 	if ((*pipex).pid == -1)
-		perror_close_exit("fork", (*pipex), 1);
+		perror_close_exit("pipex: fork", (*pipex), 1);
 	if ((*pipex).pid == 0)
 	{
-		close((*pipex).fd[1]);
-		close((*pipex).fd_in);
+		open_outfile(argv[argc - 1], pipex);		
+		//					
+		close((*pipex).fd[1]);		
 		//
 		dup2((*pipex).fd[0], STDIN);
 		close((*pipex).fd[0]);
-		//
+		//		
 		dup2((*pipex).fd_out, STDOUT);
 		close((*pipex).fd_out);
 		exec_arg((*pipex), argv, envp, 2);
 	}
-	close((*pipex).fd[0]);
-	close((*pipex).fd_out);
+	close((*pipex).fd[0]);	
+	close((*pipex).fd[1]);
 }
 
 void	exec_arg(t_pipex pipex, char **argv, char **envp, int k)
@@ -100,7 +103,7 @@ void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
 		free_cmd(cmd);
 		free_paths(&pipex);
 		close_exit(&pipex, EXIT_DENIED);
-	}
+	}	
 	if (execve(path_cmd, cmd, envp) == -1)
 	{
 		perror("execve");

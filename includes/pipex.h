@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/11 01:29:27 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/12 01:07:11 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@ typedef struct s_pipex
 	char	**paths;
 	int		fd[2];
 	int		status;
-	int		w_out;
+	//int		w_out;	
 	pid_t	pid;
 }			t_pipex;
 
 // main.c
 // main
-void		open_infile(char *file1, t_pipex *pipex);
-void		open_outfile(char *file2, t_pipex *pipex);
+void		open_infile(char *infile, t_pipex *pipex);
+void		open_outfile(char *outfile, t_pipex *pipex);
 int			wait_exitcode(t_pipex pipex);
 
 // child.c
@@ -82,7 +82,8 @@ void		ft_putstr_fd(char *str, int fd);
 int			check_in_str(char *s1, char *s2);
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strdup(char *s);
-// void		ft_putnbr_fd(int n, int fd);
+//
+void		ft_putnbr_fd(int n, int fd);
 
 // ft_split.c
 char		**ft_split(char const *s, char c);
