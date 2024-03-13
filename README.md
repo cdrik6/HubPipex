@@ -19,6 +19,7 @@ Arthur, Axel, Alex, Alexandre, Leo
 - function access utile ? la function open fait le boulot
 - execve nettoie TOUT quand elle s'execute sans probleme (!= -1)
 - apres un dup2(old, new) faire close(old), il ne sert plus, il est dans new
+- la cmd ecrit d'abord dans le pipe (execution de la commande),puis lecture de son resultat dans le pipe (donc fd[1] puis fd[0], sens inverse)
 
 A faire
 - Tester contradiction: cmd1 qui detruit l'outfile de la cmd2 ???
