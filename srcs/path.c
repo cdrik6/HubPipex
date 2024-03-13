@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/12 23:51:58 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:33:08 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,6 @@ char	*check_path(char **paths, char **cmd)
 			return (NULL);
 		if (access(tmp, X_OK) == 0)
 			return (tmp);
-		// if (access(tmp, F_OK) == 0)
-		// 	return ("");
 		free(tmp);
 		i++;
 	}
@@ -103,4 +101,11 @@ int	check_slash(char *str)
 		i++;
 	}
 	return (0);
+}
+
+void	putstr_error(char *cmd0, char *err_str)
+{
+	ft_putstr_fd("pipex: ", 2);
+	ft_putstr_fd(cmd0, 2);
+	ft_putstr_fd(err_str, 2);
 }

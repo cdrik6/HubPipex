@@ -6,15 +6,14 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:42:32 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/12 20:04:16 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:41:20 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	perror_close_exit(char *err, t_pipex pipex, int k)
+void	close_exit(t_pipex pipex, int k)
 {
-	perror(err);
 	close(pipex.fd_in);
 	close(pipex.fd_out);
 	close(pipex.fd[0]);
@@ -22,13 +21,10 @@ void	perror_close_exit(char *err, t_pipex pipex, int k)
 	exit(k);
 }
 
-void	close_exit(t_pipex pipex, int k)
+void	perror_close_exit(char *err, t_pipex pipex, int k)
 {
-	close(pipex.fd_in);
-	close(pipex.fd_out);
-	close(pipex.fd[0]);
-	close(pipex.fd[1]);	
-	exit(k);	
+	perror(err);
+	close_exit(pipex, k);
 }
 
 void	free_paths(t_pipex *pipex)
@@ -63,8 +59,10 @@ void	free_cmd(char **cmd)
 	}
 }
 
-// void	close_pipe(t_pipex pipex)
-// {
-// 	close(pipex.fd[0]);
-// 	close(pipex.fd[1]);
-// }
+void	free_close_exit(char **cmd, t_pipex *pipex, int exit_code, int is_paths)
+{
+	free_cmd(cmd);
+	if (is_paths == 1)
+		free_paths(pipex);
+	close_exit(*pipex, exit_code);
+}

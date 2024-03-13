@@ -6,15 +6,15 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:30:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/12 21:18:56 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/13 01:29:54 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PIPEX_H
 # define PIPEX_H
 
-//
-//# include <errno.h>
+// errno
+# include <errno.h>
 //
 # include <fcntl.h>
 // perror
@@ -34,7 +34,6 @@
 # define USAGE "Usage: ./pipex INFILE cmd1 cmd2 OUTFILE\n"
 # define ERR_ARG "pipex: Wrong number of arguments\n"
 # define ERR_CMD ": Command not found\n"
-# define ERR_ACC "pipex: Permission denied\n"
 # define ERR_ACX ": Permission denied\n"
 # define ERR_DIR ": No such file or directory\n"
 # define EXIT_SUCCESS 0
@@ -50,7 +49,6 @@ typedef struct s_pipex
 	char	**paths;
 	int		fd[2];
 	int		status;
-	// int		w_out;
 	pid_t	pid;
 }			t_pipex;
 
@@ -58,6 +56,7 @@ typedef struct s_pipex
 // main
 void		open_infile(char *infile, t_pipex *pipex);
 void		open_outfile(char *outfile, t_pipex *pipex);
+void		perror_open(t_pipex pipex, char *filename);
 int			wait_exitcode(t_pipex pipex);
 
 // child.c
@@ -72,24 +71,25 @@ void		get_paths(char **envp, t_pipex *pipex);
 void		slash_paths(t_pipex *pipex);
 char		*check_path(char **paths, char **cmd);
 int			check_slash(char *str);
-// void		get_cmds(char **argv, t_pipex *pipex);
+void		putstr_error(char *cmd0, char *err_str);
 
 // free.c
-void		perror_close_exit(char *err, t_pipex pipex, int k);
 void		close_exit(t_pipex pipex, int k);
+void		perror_close_exit(char *err, t_pipex pipex, int k);
 void		free_paths(t_pipex *pipex);
 void		free_cmd(char **cmd);
-// void		close_pipe(t_pipex pipex);
+void		free_close_exit(char **cmd, t_pipex *pipex, int exit_code,
+				int is_paths);
 
 // libft.c
 void		ft_putstr_fd(char *str, int fd);
 int			check_in_str(char *s1, char *s2);
 char		*ft_strjoin(char *s1, char *s2);
 char		*ft_strdup(char *s);
-//
-void		ft_putnbr_fd(int n, int fd);
 
 // ft_split.c
 char		**ft_split(char const *s, char c);
+
+// void		ft_putnbr_fd(int n, int fd);
 
 #endif

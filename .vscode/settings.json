@@ -4,6 +4,7 @@
         "stdlib.h": "c",
         "wait.h": "c",
         "stdio.h": "c",
-        "fcntl-linux.h": "c"
+        "fcntl-linux.h": "c",
+        "pipex.h": "c"
     }
 }

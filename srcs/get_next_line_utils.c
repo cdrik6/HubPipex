@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 14:36:17 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/03 02:31:45 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/13 00:59:23 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ char	*ft_substr(char *s, size_t start, size_t len)
 	else
 		size = len;
 	i = start;
-	sub = malloc(sizeof(char) * (size + 1));	
+	sub = malloc(sizeof(char) * (size + 1));
 	if (!sub)
 		return (NULL);
 	while (i < size + start)
