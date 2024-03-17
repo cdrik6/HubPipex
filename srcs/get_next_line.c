@@ -6,11 +6,11 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 14:36:17 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/03 02:32:27 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/13 23:02:16 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/get_next_line.h"
 
 char	*get_next_line(int fd)
 {

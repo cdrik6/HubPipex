@@ -6,11 +6,11 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/02 14:36:17 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/13 00:59:23 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/13 23:02:09 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "../includes/get_next_line.h"
 
 char	*gnl_strjoin(char *stash, char *buff)
 {

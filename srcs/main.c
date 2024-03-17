@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/13 01:28:34 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/17 01:38:55 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,6 @@ int	wait_exitcode(t_pipex pipex)
 			if (WIFEXITED(pipex.status))
 				exitcode = WEXITSTATUS(pipex.status);
 		}
-	}
+	}	
 	return (exitcode);
 }

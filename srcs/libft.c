@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/10 21:46:12 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/14 23:33:34 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,4 +84,18 @@ char	*ft_strdup(char *s)
 	}
 	str[i] = '\0';
 	return (str);
+}
+
+int	ft_strcmp(char *s1, char *s2)
+{
+	int	i;
+
+	i = 0;
+	// if (!s1 && !s2)
+	// 	return (0);
+	if (!s1 || !s2)
+		return (-1);
+	while (s1[i] && s2[i] && s1[i] - s2[i] == 0)
+		i++;
+	return (s1[i] - s2[i]);
 }

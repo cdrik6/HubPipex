@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_bonus.c                                       :+:      :+:    :+:   */
+/*   main_bonus2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/16 21:50:57 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/17 19:10:43 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,57 +18,23 @@ int	main(int argc, char **argv, char **envp)
 	int		i;
 
 	pipex = (t_pipex){0};
-	// if (ft_strcmp(argv[1], "here_doc") == 0)
-	// {
-	// 	if (argc < 6)
-	// 		return (ft_putstr_fd(ERR_ARG, 2), ft_putstr_fd(USAGE_DOC, 2), 1);
-	// 	pipex.is_heredoc = 1;
-	// 	pipex.lim = argv[2];
-	// 	if (pipe(pipex.docfd) == -1)
-	// 		perror_close_exit("pipex: pipe", pipex, EXIT_FAILURE);
-	// 	fill_here_doc(&pipex);
-	// 	children(&pipex, argv, envp, argc - 4);
-	// }
-	// else
-	// {
-		if (argc < 5)
-			return (ft_putstr_fd(ERR_ARG, 2), ft_putstr_fd(USAGE, 2), 1);
-		// children(&pipex, argv, envp, argc - 3);
-	// }	
+	if (argc != 5)
+		return (ft_putstr_fd(ERR_ARG, 2), ft_putstr_fd(USAGE, 2), 1);
 	i = 0;
 	while (i < argc - 3)
 	{
 		if (pipe(pipex.fd) == -1)
-			perror_close_exit("pipex: pipe", pipex, EXIT_FAILURE);
+			perror_close_exit("pipex: pipe", pipex, 1);		
 		if (i == 0)
-			child_in(&pipex, argv, envp, i + 2);
+			child_in(&pipex, argv, envp, 1);
 		else if (i == argc - 4)
-			child_out(&pipex, argv, envp, i + 2);
+			child_out(&pipex, argv, envp, argc);
 		else
-			child(&pipex, argv, envp, i + 2);
+			child(&pipex, argv, envp, i + 1);
 		i++;
 	}
 	return (wait_exitcode(pipex));
 }
-
-// void	children(t_pipex *pipex, char **argv, char **envp, int nbr_cmd)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (i < nbr_cmd)
-// 	{
-// 		if (pipe((*pipex).fd) == -1)
-// 			perror_close_exit("pipex: pipe", *pipex, EXIT_FAILURE);
-// 		if (i == 0)
-// 			child_in(pipex, argv, envp, i + 2 + (*pipex).is_heredoc);		
-// 		else if (i == nbr_cmd - 1)
-// 			child_out(pipex, argv, envp, i + 2 + (*pipex).is_heredoc);
-// 		else
-// 			child(pipex, argv, envp, i + 2 + (*pipex).is_heredoc);
-// 		i++;
-// 	}
-// }
 
 // if exist and readable --> open
 // else exit (from child)
@@ -107,7 +73,6 @@ int	wait_exitcode(t_pipex pipex)
 {
 	int	exitcode;
 
-	// exitcode = 0;
 	while (errno != ECHILD)
 	{
 		if (wait(&pipex.status) == pipex.pid)
@@ -116,5 +81,7 @@ int	wait_exitcode(t_pipex pipex)
 				exitcode = WEXITSTATUS(pipex.status);
 		}
 	}
+	// if (errno == ECHILD)
+	// 	ft_putstr_fd("ici\n", 2);
 	return (exitcode);
 }
