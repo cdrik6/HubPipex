@@ -6,33 +6,33 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:28:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/16 04:35:35 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:46:42 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-void	here_doc(t_pipex *pipex, char **argv, char **envp, int k)
-{
-	pid_t	pid;
+// void	here_doc(t_pipex *pipex, char **argv, char **envp, int k)
+// {
+// 	pid_t	pid;
 
-	pid = fork();
-	if (pid == -1)
-		perror_close_exit("pipex: fork", *pipex, 1);
-	if (pid == 0)
-	{
-		close((*pipex).fd[0]);
-		dup2((*pipex).docfd[0], STDIN);
-		close((*pipex).docfd[0]);
-		dup2((*pipex).fd[1], STDOUT);
-		close((*pipex).fd[1]);
-		exec_arg((*pipex), argv, envp, k);
-	}
-	close((*pipex).docfd[0]);
-	close((*pipex).fd[1]);
-	dup2((*pipex).fd[0], STDIN);
-	close((*pipex).fd[0]);
-}
+// 	pid = fork();
+// 	if (pid == -1)
+// 		perror_close_exit("pipex: fork", *pipex, 1);
+// 	if (pid == 0)
+// 	{
+// 		close((*pipex).fd[0]);
+// 		dup2((*pipex).docfd[0], STDIN);
+// 		close((*pipex).docfd[0]);
+// 		dup2((*pipex).fd[1], STDOUT);
+// 		close((*pipex).fd[1]);
+// 		exec_arg((*pipex), argv, envp, k);
+// 	}
+// 	close((*pipex).docfd[0]);
+// 	close((*pipex).fd[1]);
+// 	dup2((*pipex).fd[0], STDIN);
+// 	close((*pipex).fd[0]);
+// }
 
 void	fill_here_doc(t_pipex *pipex)
 {

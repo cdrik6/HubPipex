@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 23:00:31 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/17 22:41:22 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:46:31 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,8 +67,8 @@ void		open_outfile(char *outfile, t_pipex *pipex);
 void		perror_open(t_pipex pipex, char *filename);
 int			wait_exitcode(t_pipex pipex);
 
-// void		children(t_pipex *pipex, char **argv, char **envp, int nbr_cmd);
-// void		child(t_pipex *pipex, char **argv, char **envp, int k);
+void		children(t_pipex *pipex, char **argv, char **envp, int nbr_cmd);
+
 
 // child.c
 void		child_in(t_pipex *pipex, char **argv, char **envp, int k);
@@ -104,7 +104,7 @@ int			ft_strcmp(char *s1, char *s2);
 char		**ft_split(char const *s, char c);
 
 // heredoc.c
-void		here_doc(t_pipex *pipex, char **argv, char **envp, int k);
+//void		here_doc(t_pipex *pipex, char **argv, char **envp, int k);
 void		fill_here_doc(t_pipex *pipex);
 
 void		ft_putnbr_fd(int n, int fd);

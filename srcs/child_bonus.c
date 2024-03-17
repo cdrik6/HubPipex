@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:28:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/17 23:07:31 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:43:34 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,23 +21,24 @@ void	child_in(t_pipex *pipex, char **argv, char **envp, int k)
 		perror_close_exit("pipex: fork", *pipex, 1);
 	if (pid == 0)
 	{
-		// if ((*pipex).is_heredoc == 1)
-		// {
-		// 	// dup2((*pipex).docfd[0], STDIN);
-		// 	// close((*pipex).docfd[0]);
-		// }
-		// else
-		// {
-		open_infile(argv[1], pipex);
 		close((*pipex).fd[0]);
-		dup2((*pipex).fd_in, STDIN);
-		close((*pipex).fd_in); // }
+		if ((*pipex).is_heredoc == 1)
+		{
+			dup2((*pipex).docfd[0], STDIN);
+			close((*pipex).docfd[0]);
+		}
+		else
+		{
+			open_infile(argv[1], pipex);
+			dup2((*pipex).fd_in, STDIN);
+			close((*pipex).fd_in);
+		}
 		dup2((*pipex).fd[1], STDOUT);
 		close((*pipex).fd[1]);
 		exec_arg((*pipex), argv, envp, k);
 	}
-	// if ((*pipex).is_heredoc == 1)
-	// 	close((*pipex).docfd[0]);
+	if ((*pipex).is_heredoc == 1)
+	 	close((*pipex).docfd[0]);
 	close((*pipex).fd[1]);
 	dup2((*pipex).fd[0], STDIN);
 	close((*pipex).fd[0]);
