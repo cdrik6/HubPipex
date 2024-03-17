@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/08 19:28:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/16 22:02:22 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/17 23:07:31 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,20 +28,19 @@ void	child_in(t_pipex *pipex, char **argv, char **envp, int k)
 		// }
 		// else
 		// {
-		open_infile(argv[1], pipex);		
-		close((*pipex).fd[0]);		
+		open_infile(argv[1], pipex);
+		close((*pipex).fd[0]);
 		dup2((*pipex).fd_in, STDIN);
-		close((*pipex).fd_in);		// }
+		close((*pipex).fd_in); // }
 		dup2((*pipex).fd[1], STDOUT);
 		close((*pipex).fd[1]);
 		exec_arg((*pipex), argv, envp, k);
 	}
 	// if ((*pipex).is_heredoc == 1)
-	// 	close((*pipex).docfd[0]);	
+	// 	close((*pipex).docfd[0]);
 	close((*pipex).fd[1]);
 	dup2((*pipex).fd[0], STDIN);
-	//close((*pipex).fd[0]);
-	
+	close((*pipex).fd[0]);
 }
 
 void	child(t_pipex *pipex, char **argv, char **envp, int k)
@@ -54,15 +53,13 @@ void	child(t_pipex *pipex, char **argv, char **envp, int k)
 	if (pid == 0)
 	{
 		close((*pipex).fd[0]);
-		//
 		dup2((*pipex).fd[1], STDOUT);
 		close((*pipex).fd[1]);
-		//
 		exec_arg((*pipex), argv, envp, k);
-	}	
+	}
+	close((*pipex).fd[1]);
 	dup2((*pipex).fd[0], STDIN);
 	close((*pipex).fd[0]);
-	close((*pipex).fd[1]);
 }
 
 void	child_out(t_pipex *pipex, char **argv, char **envp, int k)
@@ -72,19 +69,16 @@ void	child_out(t_pipex *pipex, char **argv, char **envp, int k)
 		perror_close_exit("pipex: fork", (*pipex), 1);
 	if ((*pipex).pid == 0)
 	{
-		
-		// ft_putnbr_fd((*pipex).fd_out, 2);
 		close((*pipex).fd[1]);
-		// dup2((*pipex).fd[0], STDIN);
 		close((*pipex).fd[0]);
 		open_outfile(argv[k + 1], pipex);
 		dup2((*pipex).fd_out, STDOUT);
 		close((*pipex).fd_out);
 		exec_arg((*pipex), argv, envp, k);
 	}
-	close((*pipex).fd[0]);
 	close((*pipex).fd[1]);
-	
+	dup2((*pipex).fd[0], STDIN);
+	close((*pipex).fd[0]);
 }
 
 void	exec_arg(t_pipex pipex, char **argv, char **envp, int k)
@@ -113,7 +107,7 @@ void	exec_cmd(t_pipex pipex, char **argv, char **envp, int k)
 	}
 	if (execve(path_cmd, cmd, envp) == -1)
 	{
-		perror("execve");
+		perror("pipex: execve");
 		free(path_cmd);
 		free_close_exit(cmd, &pipex, EXIT_FAILURE, 1);
 	}
@@ -138,7 +132,7 @@ void	exec_abs(t_pipex pipex, char **argv, char **envp, int k)
 	}
 	if (execve(cmd[0], cmd, envp) == -1)
 	{
-		perror("execve");
+		perror("pipex: execve");
 		free_close_exit(cmd, &pipex, EXIT_FAILURE, 0);
 	}
 }

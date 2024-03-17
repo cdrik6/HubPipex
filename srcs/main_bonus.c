@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/29 22:22:41 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/16 21:50:57 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/17 22:42:40 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ int	main(int argc, char **argv, char **envp)
 	// }
 	// else
 	// {
-		if (argc < 5)
-			return (ft_putstr_fd(ERR_ARG, 2), ft_putstr_fd(USAGE, 2), 1);
-		// children(&pipex, argv, envp, argc - 3);
-	// }	
+	if (argc < 5)
+		return (ft_putstr_fd(ERR_ARG, 2), ft_putstr_fd(USAGE, 2), EXIT_ARG);
+	// children(&pipex, argv, envp, argc - 3);
+	// }
 	i = 0;
 	while (i < argc - 3)
 	{
@@ -61,7 +61,7 @@ int	main(int argc, char **argv, char **envp)
 // 		if (pipe((*pipex).fd) == -1)
 // 			perror_close_exit("pipex: pipe", *pipex, EXIT_FAILURE);
 // 		if (i == 0)
-// 			child_in(pipex, argv, envp, i + 2 + (*pipex).is_heredoc);		
+// 			child_in(pipex, argv, envp, i + 2 + (*pipex).is_heredoc);
 // 		else if (i == nbr_cmd - 1)
 // 			child_out(pipex, argv, envp, i + 2 + (*pipex).is_heredoc);
 // 		else

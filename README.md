@@ -1,4 +1,4 @@
-Arthur, Axel, Alex, Alexandre, Leo
+Arthur, Axel, Alex, Alexandre, Leo, Medhi
 - on a envie d'ouvrir et de traiter l'infile et l'outfile des le debut, mais il faut pouvoir exit sans forcement sortir du programme en fonction des problemes d'ouverture, donc c'est a faire au niveau du child, exit depuis le child permet de ne pas exit le programme
 - zsh n'est pas bash (126 permission denied vs 127 command not found sur la commande "")
 - ls est une commande qui leak par construction
@@ -16,10 +16,29 @@ Arthur, Axel, Alex, Alexandre, Leo
 - mnemo pour les pipe.fd : "lire, ecrire, compter" le but de l'ecole, donc lire = 0, ecrire = 1, (et stderr = 2)
 - waitpid(pid...) = -1 (process pid over), waitpid(pid...) = pid (process pid en cours)
 - valgrind --trace-children=yes --track-fds=yes 
+- valgrind --track-fds=yes --trace-children=yes --leak-check=full --show-leak-kinds=all --track-origins=yes
 - function access utile ? la function open fait le boulot
 - execve nettoie TOUT quand elle s'execute sans probleme (!= -1)
 - apres un dup2(old, new) faire close(old), il ne sert plus, il est dans new
 - la cmd ecrit d'abord dans le pipe (execution de la commande),puis lecture de son resultat dans le pipe (donc fd[1] puis fd[0], sens inverse)
+- ./pipex NON "rm NON" cat out
+- ./pipex out "rm out" cat cat out
+- ./pipex out cat cat "rm out" out
+- ./pipex out "rm out" "sleep 2" "echo toto" out
+- !!! dup2((*pipex).fd[0], STDIN); dans la partie parent du child_out, il faut ca pour qu'un 'yes' precedent ne bloque plus la STDIN (fd[0] est vide, dernier pipe cree par la boucle) !!!
+- ./pipex out wc cat bin/ls out (127)
+- ./pipex out / "echo toto" cat out
+- < out bin/. | echo toto | cat > out --> bash: bin/.: No such file or directory
+!!!
+< out /bin/. | echo toto | cat > out --> bash: /bin/.: Is a directory (126)
+< out / | echo toto | cat > out --> bash: /: Is a directory (126)
+< out cat | . > out --> 2 --> bash: .: filename argument required
+                              .: usage: . filename [arguments]
+< out cat | . > --> 2 --> bash: syntax error near unexpected token `newline'
+< cat |
+!!!
+./pipex out / "echo toto" cat out
+
 
 A faire
 - Tester contradiction: cmd1 qui detruit l'outfile de la cmd2 ???
