@@ -30,6 +30,8 @@ Arthur, Axel, Alex, Alexandre, Leo, Medhi
 - ./pipex out / "echo toto" cat out
 - < out bin/. | echo toto | cat > out --> bash: bin/.: No such file or directory
 
+./pipex out cath cakt lso "cat -ert" out
+
 A faire
 - < out /bin/. | echo toto | cat > out --> bash: /bin/.: Is a directory (126)
 - < out / | echo toto | cat > out --> bash: /: Is a directory (126)

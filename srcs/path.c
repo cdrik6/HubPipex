@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/13 01:33:08 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/18 01:24:24 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,12 @@ int	check_slash(char *str)
 
 void	putstr_error(char *cmd0, char *err_str)
 {
-	ft_putstr_fd("pipex: ", 2);
-	ft_putstr_fd(cmd0, 2);
-	ft_putstr_fd(err_str, 2);
+	char	*tmp1;
+	char	*tmp2;
+
+	tmp1 = ft_strjoin("pipex: ", cmd0);
+	tmp2 = ft_strjoin(tmp1, err_str);
+	ft_putstr_fd(tmp2, STDERR);
+	free(tmp1);
+	free(tmp2);
 }
