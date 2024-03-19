@@ -1,0 +1,3 @@
+bonus:		$(NAME)
+rebonus: 	fclean bonus
+.PHONY: 	all clean fclean re bonus rebonus

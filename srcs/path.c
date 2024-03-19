@@ -6,7 +6,7 @@
 /*   By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/03 22:13:23 by caguillo          #+#    #+#             */
-/*   Updated: 2024/03/18 01:24:24 by caguillo         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:23:03 by caguillo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,15 +89,24 @@ char	*check_path(char **paths, char **cmd)
 
 int	check_slash(char *str)
 {
-	int	i;
+	size_t	i;
 
 	i = 0;
 	if (!str)
 		return (0);
+	if (str[ft_strlen(str) - 1] == '/')
+		return (0);
 	while (str[i])
 	{
 		if (str[i] == '/')
+		{
+			if (i >= 1)
+			{
+				if (str[i - 1] == ' ')
+					return (0);
+			}
 			return (1);
+		}
 		i++;
 	}
 	return (0);

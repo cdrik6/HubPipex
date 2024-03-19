@@ -1,4 +1,4 @@
-Arthur, Axel, Alex, Alexandre, Leo, Medhi
+Arthur, Axel, Alex, Alexandre, Leo, Medhi, Elsa
 - on a envie d'ouvrir et de traiter l'infile et l'outfile des le debut, mais il faut pouvoir exit sans forcement sortir du programme en fonction des problemes d'ouverture, donc c'est a faire au niveau du child, exit depuis le child permet de ne pas exit le programme
 - zsh n'est pas bash (126 permission denied vs 127 command not found sur la commande "")
 - ls est une commande qui leak par construction

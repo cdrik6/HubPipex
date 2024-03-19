@@ -6,7 +6,7 @@
 #    By: caguillo <caguillo@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/25 23:32:02 by caguillo          #+#    #+#              #
-#    Updated: 2024/03/18 01:16:45 by caguillo         ###   ########.fr        #
+#    Updated: 2024/03/18 21:19:36 by caguillo         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,11 +40,15 @@ $(NAME):	$(OBJS)
 all:		$(NAME)
 
 re: 		fclean all
+
+bonus:		$(NAME)
+
+rebonus: 	fclean bonus
 			
 clean:
 			rm -f $(OBJS)
-
+			
 fclean: 	clean
 			rm -f $(NAME)
 
-.PHONY: 	all clean fclean
+.PHONY: 	all clean fclean re bonus rebonus
