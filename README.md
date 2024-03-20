@@ -29,23 +29,16 @@ Arthur, Axel, Alex, Alexandre, Leo, Medhi, Elsa
 - ./pipex out wc cat bin/ls out (127)
 - ./pipex out / "echo toto" cat out
 - < out bin/. | echo toto | cat > out --> bash: bin/.: No such file or directory
-
-./pipex out cath cakt lso "cat -ert" out
-
-A faire
-- < out /bin/. | echo toto | cat > out --> bash: /bin/.: Is a directory (126)
-- < out / | echo toto | cat > out --> bash: /: Is a directory (126)
-- < out cat | . > out --> 2 --> bash: .: filename argument required
-                              .: usage: . filename [arguments]
-- < out cat | . > --> 2 --> bash: syntax error near unexpected token `newline'
-- < cat |
-- ./pipex out / "echo toto" cat out
+- ./pipex out cath cakt lso "cat -ert" out
 
 Testeurs
-- bkody
-- vfurmane
-- scely
-
+- bastienkody : https://github.com/bastienkody/pipex_tester
+- vfurmane: https://github.com/vfurmane/pipex-tester
+- scely_test : https://github.com/cezou/Pipex
+- Yoo0lh: https://github.com/Yoo0lh/pipex_tester_42
+- michmos: https://github.com/michmos/42_pipex_tester
+- mateusmedeir: https://github.com/mateusmedeir/pipexTester
+ 
 Ref
 
 https://csnotes.medium.com/pipex-tutorial-42-project-4469f5dd5901
@@ -58,3 +51,11 @@ https://www.codequoi.com/creer-et-tuer-des-processus-fils-en-c/
 
 https://www.youtube.com/watch?v=tcYo6hipaSA&list=PLfqABt5AS4FkW5mOn2Tn9ZZLLDwA3kZUY&index=5
 
+A faire
+- < out /bin/. | echo toto | cat > out --> bash: /bin/.: Is a directory (126)
+- < out / | echo toto | cat > out --> bash: /: Is a directory (126)
+- < out cat | . > out --> 2 --> bash: .: filename argument required
+                              .: usage: . filename [arguments]
+- < out cat | . > --> 2 --> bash: syntax error near unexpected token `newline'
+- < cat |
+- ./pipex out / "echo toto" cat out
