@@ -59,3 +59,5 @@ A faire
 - < out cat | . > --> 2 --> bash: syntax error near unexpected token `newline'
 - < cat |
 - ./pipex out / "echo toto" cat out
+- testeur pipexMedic gmarcha https://github.com/gmarcha/pipexMedic
+- testeur ael-bekk: https://github.com/ael-bekk/PIPEX_TESTER
